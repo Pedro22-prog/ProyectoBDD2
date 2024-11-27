@@ -15,7 +15,7 @@ export class CircuitsService {
     return newCircuit.save();
   }
 
-  findAll(): Promise<Circuit[]> {
+  async findAll(): Promise<Circuit[]> {
     return this.circuitModel.find().exec();
   }
 

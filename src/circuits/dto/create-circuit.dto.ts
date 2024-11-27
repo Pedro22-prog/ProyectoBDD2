@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { isNumber, IsNumber, IsOptional, IsString } from "class-validator";
+import { isNumber, IsNumber, IsOptional, IsString, IsUrl } from "class-validator";
 
 export class CreateCircuitDto {
     @ApiProperty({example: 1})
@@ -35,7 +35,7 @@ export class CreateCircuitDto {
     alt: number;
 
     @ApiProperty({example: "http://en.wikipedia.org/wiki/Melbourne_Grand_Prix_Circuit"})
-    @IsString()
+    @IsUrl()
     @IsOptional()
     url: string;
 }

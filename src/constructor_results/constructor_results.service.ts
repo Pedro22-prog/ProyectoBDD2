@@ -16,7 +16,7 @@ export class ConstructorResultsService {
         return newResult.save();
     }
 
-    findAll(): Promise<ConstructorResult[]> {
+    async findAll(): Promise<ConstructorResult[]> {
         return this.constructorResultModel.find().exec();
     }
 

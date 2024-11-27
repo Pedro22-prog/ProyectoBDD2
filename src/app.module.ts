@@ -15,6 +15,7 @@ import { SprintResultsModule } from './sprint_results/sprint_results.module';
 import { StatusModule } from './status/status.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
+import { ConstructorModule } from './constructor/constructor.module';
 
 
 @Module({
@@ -26,10 +27,10 @@ import { ConfigModule } from '@nestjs/config';
       {
         useFactory:() => ({
             uri: process.env.MONGODB_URI,
-            dbName: process.env.MONGODB_DB,
+            dbName: process.env.DB_NAME,
         }),
       }
-    ), DriversModule, LapTimesModule, CircuitsModule, ConstructorResultsModule, ConstructorStandingsModule, DriverStandingsModule, PitStopsModule, QualifyingModule, RacesModule, ResultsModule, SprintResultsModule, StatusModule],
+    ), DriversModule, LapTimesModule, CircuitsModule, ConstructorResultsModule, ConstructorStandingsModule, DriverStandingsModule, PitStopsModule, QualifyingModule, RacesModule, ResultsModule, SprintResultsModule, StatusModule, ConstructorModule],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -8,27 +8,28 @@ export class DriversController {
   constructor(private readonly driversService: DriversService) {}
 
   @Post()
-  create(@Body() createDriverDto: CreateDriverDto) {
-    return this.driversService.create(createDriverDto);
+  async create(@Body() createDriverDto: CreateDriverDto) {
+    return await this.driversService.create(createDriverDto);
   }
 
   @Get()
-  findAll() {
-    return this.driversService.findAll();
+  async findAll() {
+    return await this.driversService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.driversService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.driversService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDriverDto: UpdateDriverDto) {
-    return this.driversService.update(+id, updateDriverDto);
+  async update(@Param('id') id: string, @Body() updateDriverDto: UpdateDriverDto) {
+    return await this.driversService.update(id, updateDriverDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.driversService.remove(+id);
+  async remove(@Param('id') id: string) {
+    await this.driversService.remove(id);
+    return { message: `Driver with ID ${id} has been removed.` };
   }
 }

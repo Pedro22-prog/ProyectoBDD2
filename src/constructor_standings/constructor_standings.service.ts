@@ -1,26 +1,61 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { ConstructorStanding } from './entities/constructor_standing.entity';
 import { CreateConstructorStandingDto } from './dto/create-constructor_standing.dto';
 import { UpdateConstructorStandingDto } from './dto/update-constructor_standing.dto';
 
 @Injectable()
 export class ConstructorStandingsService {
-  create(createConstructorStandingDto: CreateConstructorStandingDto) {
-    return 'This action adds a new constructorStanding';
+  constructor(
+    @InjectModel(ConstructorStanding.name)
+    private readonly constructorStandingModel: Model<ConstructorStanding>,
+  ) {}
+
+  async create(
+    createConstructorStandingDto: CreateConstructorStandingDto,
+  ): Promise<ConstructorStanding> {
+    const newStanding = new this.constructorStandingModel(
+      createConstructorStandingDto,
+    );
+    return newStanding.save();
   }
 
-  findAll() {
-    return `This action returns all constructorStandings`;
+  findAll(): Promise<ConstructorStanding[]> {
+    return this.constructorStandingModel.find().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} constructorStanding`;
+  async findOne(id: string): Promise<ConstructorStanding> {
+    const standing = await this.constructorStandingModel.findById(id).exec();
+    if (!standing) {
+      throw new NotFoundException(
+        `ConstructorStanding with ID ${id} not found`,
+      );
+    }
+    return standing;
   }
 
-  update(id: number, updateConstructorStandingDto: UpdateConstructorStandingDto) {
-    return `This action updates a #${id} constructorStanding`;
+  async update(
+    id: string,
+    updateConstructorStandingDto: UpdateConstructorStandingDto,
+  ): Promise<ConstructorStanding> {
+    const updatedStanding = await this.constructorStandingModel
+      .findByIdAndUpdate(id, updateConstructorStandingDto, { new: true })
+      .exec();
+    if (!updatedStanding) {
+      throw new NotFoundException(
+        `ConstructorStanding with ID ${id} not found`,
+      );
+    }
+    return updatedStanding;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} constructorStanding`;
+  async remove(id: string): Promise<void> {
+    const result = await this.constructorStandingModel.findByIdAndDelete(id).exec();
+    if (!result) {
+      throw new NotFoundException(
+        `ConstructorStanding with ID ${id} not found`,
+      );
+    }
   }
 }

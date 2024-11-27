@@ -1,4 +1,4 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { CreateSprintResultDto } from './create-sprint_result.dto';
+import { CreateSprintResultsDto } from './create-sprint_result.dto';
 
-export class UpdateSprintResultDto extends PartialType(CreateSprintResultDto) {}
+export class UpdateSprintResultsDto extends PartialType(CreateSprintResultsDto) {}

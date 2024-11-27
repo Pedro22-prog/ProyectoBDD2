@@ -1,34 +1,35 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { ResultsService } from './results.service';
-import { CreateResultDto } from './dto/create-result.dto';
-import { UpdateResultDto } from './dto/update-result.dto';
+import { CreateResultsDto } from './dto/create-result.dto';
+import { UpdateResultsDto } from './dto/update-result.dto';
 
 @Controller('results')
 export class ResultsController {
   constructor(private readonly resultsService: ResultsService) {}
 
   @Post()
-  create(@Body() createResultDto: CreateResultDto) {
-    return this.resultsService.create(createResultDto);
+  async create(@Body() createResultsDto: CreateResultsDto) {
+    return await this.resultsService.create(createResultsDto);
   }
 
   @Get()
-  findAll() {
-    return this.resultsService.findAll();
+  async findAll() {
+    return await this.resultsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.resultsService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.resultsService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateResultDto: UpdateResultDto) {
-    return this.resultsService.update(+id, updateResultDto);
+  async update(@Param('id') id: string, @Body() updateResultsDto: UpdateResultsDto) {
+    return await this.resultsService.update(id, updateResultsDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.resultsService.remove(+id);
+  async remove(@Param('id') id: string) {
+    await this.resultsService.remove(id);
+    return { message: `Result with ID ${id} has been removed.` };
   }
 }

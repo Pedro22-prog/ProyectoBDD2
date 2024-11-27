@@ -2,24 +2,21 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 @Schema()
-export class LapTime extends Document {
+export class Constructor extends Document {
   @Prop({ required: true })
-  raceId: number;
+  constructorId: number;
 
   @Prop({ required: true })
-  driverId: number;
+  constructorRef: string;
 
   @Prop({ required: true })
-  lap: number;
+  name: string;
 
   @Prop({ required: true })
-  position: number;
+  nationality: string;
 
   @Prop({ required: true })
-  time: string;
-
-  @Prop({ required: true })
-  milliseconds: number;
+  url: string;
 }
 
-export const LapTimeSchema = SchemaFactory.createForClass(LapTime);
+export const ConstructorSchema = SchemaFactory.createForClass(Constructor);

@@ -1,9 +1,14 @@
 import { Module } from '@nestjs/common';
-import { RacesService } from './races.service';
-import { RacesController } from './races.controller';
+import { MongooseModule } from '@nestjs/mongoose';
+import { RaceService } from './races.service';
+import { RaceController } from './races.controller';
+import { Race, RaceSchema } from './entities/race.entity';
 
 @Module({
-  controllers: [RacesController],
-  providers: [RacesService],
+  imports: [
+    MongooseModule.forFeature([{ name: Race.name, schema: RaceSchema }]),
+  ],
+  controllers: [RaceController],
+  providers: [RaceService],
 })
-export class RacesModule {}
+export class RaceModule {}

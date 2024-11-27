@@ -1,34 +1,35 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { RacesService } from './races.service';
+import { RaceService } from './races.service';
 import { CreateRaceDto } from './dto/create-race.dto';
 import { UpdateRaceDto } from './dto/update-race.dto';
 
 @Controller('races')
-export class RacesController {
-  constructor(private readonly racesService: RacesService) {}
+export class RaceController {
+  constructor(private readonly raceService: RaceService) {}
 
   @Post()
-  create(@Body() createRaceDto: CreateRaceDto) {
-    return this.racesService.create(createRaceDto);
+  async create(@Body() createRaceDto: CreateRaceDto) {
+    return await this.raceService.create(createRaceDto);
   }
 
   @Get()
-  findAll() {
-    return this.racesService.findAll();
+  async findAll() {
+    return await this.raceService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.racesService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.raceService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRaceDto: UpdateRaceDto) {
-    return this.racesService.update(+id, updateRaceDto);
+  async update(@Param('id') id: string, @Body() updateRaceDto: UpdateRaceDto) {
+    return await this.raceService.update(id, updateRaceDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.racesService.remove(+id);
+  async remove(@Param('id') id: string) {
+    await this.raceService.remove(id);
+    return { message: `Race with ID ${id} has been removed.` };
   }
 }

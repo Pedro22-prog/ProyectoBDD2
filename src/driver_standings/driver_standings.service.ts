@@ -1,26 +1,53 @@
-import { Injectable } from '@nestjs/common';
-import { CreateDriverStandingDto } from './dto/create-driver_standing.dto';
-import { UpdateDriverStandingDto } from './dto/update-driver_standing.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { DriverStandings } from './entities/driver_standing.entity';
+import { CreateDriverStandingsDto } from './dto/create-driver_standing.dto';
+import { UpdateDriverStandingsDto } from './dto/update-driver_standing.dto';
 
 @Injectable()
 export class DriverStandingsService {
-  create(createDriverStandingDto: CreateDriverStandingDto) {
-    return 'This action adds a new driverStanding';
+  constructor(
+    @InjectModel(DriverStandings.name)
+    private readonly driverStandingsModel: Model<DriverStandings>,
+  ) {}
+
+  async create(
+    createDriverStandingsDto: CreateDriverStandingsDto,
+  ): Promise<DriverStandings> {
+    const newDriverStandings = new this.driverStandingsModel(createDriverStandingsDto);
+    return newDriverStandings.save();
   }
 
-  findAll() {
-    return `This action returns all driverStandings`;
+  findAll(): Promise<DriverStandings[]> {
+    return this.driverStandingsModel.find().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} driverStanding`;
+  async findOne(id: string): Promise<DriverStandings> {
+    const driverStandings = await this.driverStandingsModel.findById(id).exec();
+    if (!driverStandings) {
+      throw new NotFoundException(`Driver Standings with ID ${id} not found`);
+    }
+    return driverStandings;
   }
 
-  update(id: number, updateDriverStandingDto: UpdateDriverStandingDto) {
-    return `This action updates a #${id} driverStanding`;
+  async update(
+    id: string,
+    updateDriverStandingsDto: UpdateDriverStandingsDto,
+  ): Promise<DriverStandings> {
+    const updatedDriverStandings = await this.driverStandingsModel
+      .findByIdAndUpdate(id, updateDriverStandingsDto, { new: true })
+      .exec();
+    if (!updatedDriverStandings) {
+      throw new NotFoundException(`Driver Standings with ID ${id} not found`);
+    }
+    return updatedDriverStandings;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} driverStanding`;
+  async remove(id: string): Promise<void> {
+    const result = await this.driverStandingsModel.findByIdAndDelete(id).exec();
+    if (!result) {
+      throw new NotFoundException(`Driver Standings with ID ${id} not found`);
+    }
   }
 }

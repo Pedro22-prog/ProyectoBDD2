@@ -1,34 +1,38 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { LapTimesService } from './lap_times.service';
+import { LapTimeService } from './lap_times.service';
 import { CreateLapTimeDto } from './dto/create-lap_time.dto';
 import { UpdateLapTimeDto } from './dto/update-lap_time.dto';
 
 @Controller('lap-times')
-export class LapTimesController {
-  constructor(private readonly lapTimesService: LapTimesService) {}
+export class LapTimeController {
+  constructor(private readonly lapTimeService: LapTimeService) {}
 
   @Post()
-  create(@Body() createLapTimeDto: CreateLapTimeDto) {
-    return this.lapTimesService.create(createLapTimeDto);
+  async create(@Body() createLapTimeDto: CreateLapTimeDto) {
+    return await this.lapTimeService.create(createLapTimeDto);
   }
 
   @Get()
-  findAll() {
-    return this.lapTimesService.findAll();
+  async findAll() {
+    return await this.lapTimeService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.lapTimesService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.lapTimeService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLapTimeDto: UpdateLapTimeDto) {
-    return this.lapTimesService.update(+id, updateLapTimeDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateLapTimeDto: UpdateLapTimeDto,
+  ) {
+    return await this.lapTimeService.update(id, updateLapTimeDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.lapTimesService.remove(+id);
+  async remove(@Param('id') id: string) {
+    await this.lapTimeService.remove(id);
+    return { message: `LapTime with ID ${id} has been removed.` };
   }
 }

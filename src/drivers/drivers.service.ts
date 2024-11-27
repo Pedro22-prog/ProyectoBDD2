@@ -1,26 +1,48 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Driver } from './entities/driver.entity';
 import { CreateDriverDto } from './dto/create-driver.dto';
 import { UpdateDriverDto } from './dto/update-driver.dto';
 
 @Injectable()
 export class DriversService {
-  create(createDriverDto: CreateDriverDto) {
-    return 'This action adds a new driver';
+  constructor(
+    @InjectModel(Driver.name)
+    private readonly driverModel: Model<Driver>,
+  ) {}
+
+  async create(createDriverDto: CreateDriverDto): Promise<Driver> {
+    const newDriver = new this.driverModel(createDriverDto);
+    return newDriver.save();
   }
 
-  findAll() {
-    return `This action returns all drivers`;
+  findAll(): Promise<Driver[]> {
+    return this.driverModel.find().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} driver`;
+  async findOne(id: string): Promise<Driver> {
+    const driver = await this.driverModel.findById(id).exec();
+    if (!driver) {
+      throw new NotFoundException(`Driver with ID ${id} not found`);
+    }
+    return driver;
   }
 
-  update(id: number, updateDriverDto: UpdateDriverDto) {
-    return `This action updates a #${id} driver`;
+  async update(id: string, updateDriverDto: UpdateDriverDto): Promise<Driver> {
+    const updatedDriver = await this.driverModel
+      .findByIdAndUpdate(id, updateDriverDto, { new: true })
+      .exec();
+    if (!updatedDriver) {
+      throw new NotFoundException(`Driver with ID ${id} not found`);
+    }
+    return updatedDriver;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} driver`;
+  async remove(id: string): Promise<void> {
+    const result = await this.driverModel.findByIdAndDelete(id).exec();
+    if (!result) {
+      throw new NotFoundException(`Driver with ID ${id} not found`);
+    }
   }
 }

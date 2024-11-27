@@ -1,26 +1,47 @@
-import { Injectable } from '@nestjs/common';
-import { CreateResultDto } from './dto/create-result.dto';
-import { UpdateResultDto } from './dto/update-result.dto';
-
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Results } from './entities/result.entity';
+import { CreateResultsDto } from './dto/create-result.dto';
+import { UpdateResultsDto } from './dto/update-result.dto';
 @Injectable()
 export class ResultsService {
-  create(createResultDto: CreateResultDto) {
-    return 'This action adds a new result';
+  constructor(
+    @InjectModel(Results.name)
+    private readonly resultsModel: Model<Results>,
+  ) {}
+
+  async create(createResultsDto: CreateResultsDto): Promise<Results> {
+    const newResult = new this.resultsModel(createResultsDto);
+    return newResult.save();
   }
 
-  findAll() {
-    return `This action returns all results`;
+  findAll(): Promise<Results[]> {
+    return this.resultsModel.find().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} result`;
+  async findOne(id: string): Promise<Results> {
+    const result = await this.resultsModel.findById(id).exec();
+    if (!result) {
+      throw new NotFoundException(`Result with ID ${id} not found`);
+    }
+    return result;
   }
 
-  update(id: number, updateResultDto: UpdateResultDto) {
-    return `This action updates a #${id} result`;
+  async update(id: string, updateResultsDto: UpdateResultsDto): Promise<Results> {
+    const updatedResult = await this.resultsModel
+      .findByIdAndUpdate(id, updateResultsDto, { new: true })
+      .exec();
+    if (!updatedResult) {
+      throw new NotFoundException(`Result with ID ${id} not found`);
+    }
+    return updatedResult;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} result`;
+  async remove(id: string): Promise<void> {
+    const result = await this.resultsModel.findByIdAndDelete(id).exec();
+    if (!result) {
+      throw new NotFoundException(`Result with ID ${id} not found`);
+    }
   }
 }
